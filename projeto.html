@@ -1,0 +1,1545 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Torre da Rapunzel</title>
+
+    <style>
+
+        /* =========================
+           CONFIGURAÇÕES GERAIS
+        ========================= */
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+
+            background:
+                linear-gradient(
+                    #f7b1cf 0%,
+                    #ffd0b0 48%,
+                    #9bc9d9 100%
+                );
+
+            font-family: "Trebuchet MS", Arial, sans-serif;
+
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            overflow: hidden;
+        }
+
+
+        /* =========================
+           JOGO
+        ========================= */
+
+        #game {
+            width: 1200px;
+            height: 700px;
+
+            position: relative;
+
+            overflow: hidden;
+
+            border: 6px solid #573c63;
+
+            background:
+                linear-gradient(
+                    #f7b0ce 0%,
+                    #ffd2b2 60%,
+                    #9bcf9b 60%,
+                    #75aa70 100%
+                );
+
+            box-shadow:
+                0 10px 30px rgba(60, 35, 70, 0.35);
+        }
+
+
+        /* =========================
+           NUVENS
+        ========================= */
+
+        .cloud {
+            position: absolute;
+
+            width: 130px;
+            height: 35px;
+
+            background: #fff1f5;
+
+            border-radius: 30px;
+
+            opacity: 0.9;
+        }
+
+        .cloud::before,
+        .cloud::after {
+            content: "";
+
+            position: absolute;
+
+            background: #fff1f5;
+
+            border-radius: 50%;
+        }
+
+        .cloud::before {
+            width: 55px;
+            height: 55px;
+
+            left: 15px;
+            top: -25px;
+        }
+
+        .cloud::after {
+            width: 65px;
+            height: 65px;
+
+            right: 15px;
+            top: -30px;
+        }
+
+        .cloud1 {
+            left: 430px;
+            top: 80px;
+        }
+
+        .cloud2 {
+            right: 60px;
+            top: 130px;
+        }
+
+
+        /* =========================
+           MONTANHAS
+        ========================= */
+
+        .mountains {
+            position: absolute;
+
+            bottom: 155px;
+            left: 0;
+
+            width: 100%;
+            height: 180px;
+
+            opacity: 0.8;
+        }
+
+        .mountain {
+            position: absolute;
+
+            bottom: 0;
+
+            width: 300px;
+            height: 160px;
+
+            background: #9b76c7;
+
+            clip-path: polygon(
+                50% 0,
+                100% 100%,
+                0 100%
+            );
+        }
+
+        .mountain1 {
+            left: 650px;
+        }
+
+        .mountain2 {
+            left: 850px;
+
+            height: 130px;
+
+            background: #b486d1;
+        }
+
+
+        /* =========================
+           JARDIM
+        ========================= */
+
+        .garden {
+            position: absolute;
+
+            bottom: 0;
+            left: 0;
+
+            width: 100%;
+            height: 165px;
+
+            background:
+                linear-gradient(
+                    #71a85e,
+                    #54894d
+                );
+
+            border-top: 5px solid #487644;
+        }
+
+
+        /* FLORES */
+
+        .flower {
+            position: absolute;
+
+            font-size: 24px;
+        }
+
+        .flower1 {
+            left: 720px;
+            bottom: 70px;
+        }
+
+        .flower2 {
+            left: 800px;
+            bottom: 40px;
+        }
+
+        .flower3 {
+            left: 950px;
+            bottom: 80px;
+        }
+
+        .flower4 {
+            right: 70px;
+            bottom: 50px;
+        }
+
+
+        /* =========================
+           PAINEL DE INFORMAÇÕES
+        ========================= */
+
+        #info {
+            position: absolute;
+
+            left: 35px;
+            top: 70px;
+
+            width: 230px;
+
+            padding: 25px;
+
+            background: #fff4f8;
+
+            border: 5px solid #865a88;
+
+            border-radius: 12px;
+
+            color: #594266;
+
+            box-shadow:
+                5px 5px 0 #6e4b72;
+
+            z-index: 100;
+        }
+
+        #info h1 {
+            margin: 0 0 15px;
+
+            font-size: 25px;
+
+            line-height: 1.1;
+
+            color: #63466f;
+        }
+
+        #info p {
+            font-size: 16px;
+
+            line-height: 1.5;
+
+            margin: 10px 0;
+        }
+
+
+        /* =========================
+           BOTÃO
+        ========================= */
+
+        #callButton {
+
+            position: absolute;
+
+            left: 300px;
+            bottom: 50px;
+
+            width: 270px;
+            height: 70px;
+
+            border: 5px solid #873d70;
+
+            border-radius: 15px;
+
+            background:
+                linear-gradient(
+                    #f879bd,
+                    #d94c98
+                );
+
+            color: white;
+
+            font-size: 19px;
+
+            font-weight: bold;
+
+            cursor: pointer;
+
+            box-shadow:
+                0 6px 0 #873d70;
+
+            transition: 0.15s;
+
+            z-index: 100;
+        }
+
+        #callButton:hover {
+            transform: translateY(-2px);
+        }
+
+        #callButton:active {
+            transform: translateY(5px);
+
+            box-shadow:
+                0 1px 0 #873d70;
+        }
+
+        #callButton:disabled {
+            opacity: 0.55;
+
+            cursor: not-allowed;
+        }
+
+
+        /* =========================
+           CENÁRIO
+        ========================= */
+
+        #scene {
+            position: absolute;
+
+            left: 300px;
+            top: 20px;
+
+            width: 820px;
+            height: 560px;
+        }
+
+
+        /* =========================
+           TORRE
+        ========================= */
+
+        #tower {
+            position: absolute;
+
+            left: 270px;
+            top: 0;
+
+            width: 300px;
+            height: 560px;
+        }
+
+
+        /* =========================
+           TELHADO
+        ========================= */
+
+        .roof {
+            position: absolute;
+
+            top: 0;
+            left: -25px;
+
+            width: 350px;
+            height: 95px;
+
+            background:
+                repeating-linear-gradient(
+                    135deg,
+                    #8e42a5 0px,
+                    #8e42a5 15px,
+                    #713583 15px,
+                    #713583 30px
+                );
+
+            border: 5px solid #54325f;
+
+            clip-path: polygon(
+                50% 0,
+                100% 100%,
+                0 100%
+            );
+
+            z-index: 10;
+        }
+
+
+        /* =========================
+           CORPO DA TORRE
+        ========================= */
+
+        .tower-body {
+            position: absolute;
+
+            top: 85px;
+            left: 20px;
+
+            width: 260px;
+            height: 475px;
+
+            background:
+                repeating-linear-gradient(
+                    90deg,
+                    #6c6875 0px,
+                    #6c6875 18px,
+                    #817d89 18px,
+                    #817d89 35px
+                );
+
+            border-left: 6px solid #4d4857;
+            border-right: 6px solid #4d4857;
+
+            box-shadow:
+                inset 8px 0 rgba(255,255,255,0.08),
+                inset -8px 0 rgba(0,0,0,0.15);
+        }
+
+        .tower-body::before {
+            content: "";
+
+            position: absolute;
+
+            inset: 0;
+
+            background:
+                repeating-linear-gradient(
+                    0deg,
+                    transparent 0px,
+                    transparent 38px,
+                    rgba(50,45,60,0.5) 39px,
+                    rgba(50,45,60,0.5) 42px
+                );
+        }
+
+
+        /* =========================
+           PLANTAS
+        ========================= */
+
+        .vines {
+            position: absolute;
+
+            z-index: 30;
+
+            color: #4d8b50;
+
+            font-size: 28px;
+
+            line-height: 1;
+        }
+
+        .vine1 {
+            left: 0;
+            top: 90px;
+        }
+
+        .vine2 {
+            right: -5px;
+            top: 120px;
+        }
+
+        .vine3 {
+            left: -5px;
+            top: 270px;
+        }
+
+        .vine4 {
+            right: -5px;
+            top: 330px;
+        }
+
+
+        /* =========================
+           ANDAR SUPERIOR
+        ========================= */
+
+        #topFloor {
+            position: absolute;
+
+            top: 105px;
+            left: 35px;
+
+            width: 190px;
+            height: 145px;
+
+            background:
+                linear-gradient(
+                    #624b51,
+                    #3d3540
+                );
+
+            border: 5px solid #352e38;
+
+            z-index: 20;
+
+            overflow: visible;
+        }
+
+        #topFloor::after {
+            content: "";
+
+            position: absolute;
+
+            bottom: -15px;
+            left: -10px;
+
+            width: 210px;
+            height: 18px;
+
+            background:
+                repeating-linear-gradient(
+                    90deg,
+                    #714b38 0px,
+                    #714b38 25px,
+                    #8b5c42 25px,
+                    #8b5c42 50px
+                );
+
+            border: 4px solid #4e342b;
+        }
+
+
+        /* =========================
+           JANELA
+        ========================= */
+
+        .window {
+            position: absolute;
+
+            left: 55px;
+            top: 20px;
+
+            width: 70px;
+            height: 80px;
+
+            background:
+                linear-gradient(
+                    #26243a,
+                    #40334c
+                );
+
+            border: 7px solid #3c303b;
+
+            border-radius: 40px 40px 0 0;
+        }
+
+        .window::before {
+            content: "";
+
+            position: absolute;
+
+            left: 50%;
+
+            width: 5px;
+            height: 100%;
+
+            background: #604c58;
+        }
+
+        .window::after {
+            content: "";
+
+            position: absolute;
+
+            top: 50%;
+
+            width: 100%;
+            height: 5px;
+
+            background: #604c58;
+        }
+
+
+        /* =========================
+           MÓVEIS
+        ========================= */
+
+        .furniture {
+            position: absolute;
+
+            right: 15px;
+            bottom: 25px;
+
+            width: 50px;
+            height: 35px;
+
+            background: #8c5b43;
+
+            border: 4px solid #52382e;
+        }
+
+
+        /* =========================
+           RAPUNZEL
+        ========================= */
+
+        .rapunzel {
+            position: absolute;
+
+            width: 48px;
+            height: 90px;
+
+            z-index: 50;
+        }
+
+        .rapunzel::before {
+            content: "";
+
+            position: absolute;
+
+            left: 5px;
+            top: 0;
+
+            width: 38px;
+            height: 50px;
+
+            background: #e9a93f;
+
+            border: 4px solid #9a642d;
+
+            border-radius: 20px 20px 12px 12px;
+
+            z-index: 1;
+        }
+
+        .rapunzel .face {
+            position: absolute;
+
+            left: 14px;
+            top: 10px;
+
+            width: 22px;
+            height: 24px;
+
+            background: #ffd1a9;
+
+            border: 3px solid #8b5544;
+
+            z-index: 5;
+
+            border-radius: 5px;
+        }
+
+        .rapunzel .face::after {
+            content: "• •";
+
+            position: absolute;
+
+            left: 2px;
+            top: 5px;
+
+            font-size: 9px;
+
+            color: #4d3540;
+        }
+
+        .rapunzel .dress {
+            position: absolute;
+
+            left: 9px;
+            top: 34px;
+
+            width: 31px;
+            height: 42px;
+
+            background:
+                linear-gradient(
+                    #a957c7,
+                    #71388e
+                );
+
+            border: 4px solid #513060;
+
+            clip-path: polygon(
+                25% 0,
+                75% 0,
+                100% 100%,
+                0 100%
+            );
+
+            z-index: 4;
+        }
+
+        .rapunzel .arm {
+            position: absolute;
+
+            top: 38px;
+
+            width: 8px;
+            height: 25px;
+
+            background: #ffd1a9;
+
+            border: 3px solid #8b5544;
+
+            z-index: 6;
+        }
+
+        .rapunzel .arm.left {
+            left: 2px;
+
+            transform: rotate(15deg);
+        }
+
+        .rapunzel .arm.right {
+            right: 2px;
+
+            transform: rotate(-15deg);
+        }
+
+        .rapunzel .leg {
+            position: absolute;
+
+            top: 70px;
+
+            width: 8px;
+            height: 15px;
+
+            background: #ffd1a9;
+
+            border: 3px solid #8b5544;
+
+            z-index: 3;
+        }
+
+        .rapunzel .leg.left {
+            left: 12px;
+        }
+
+        .rapunzel .leg.right {
+            right: 12px;
+        }
+
+        #rapunzelTop {
+            left: 68px;
+            top: 25px;
+
+            transition:
+                left 1.5s ease,
+                top 1.5s ease,
+                opacity 0.5s;
+        }
+
+
+        /* =========================
+           ELEVADOR
+        ========================= */
+
+        .shaft {
+            position: absolute;
+
+            left: 70px;
+            top: 250px;
+
+            width: 120px;
+            height: 310px;
+
+            background:
+                linear-gradient(
+                    90deg,
+                    #211f29,
+                    #302b38,
+                    #211f29
+                );
+
+            border-left: 6px solid #413846;
+            border-right: 6px solid #413846;
+
+            z-index: 15;
+
+            overflow: hidden;
+        }
+
+        .shaft::before {
+            content: "";
+
+            position: absolute;
+
+            left: 50%;
+
+            top: 0;
+
+            width: 7px;
+            height: 100%;
+
+            transform: translateX(-50%);
+
+            background:
+                repeating-linear-gradient(
+                    #a7783e 0px,
+                    #a7783e 8px,
+                    #6b4828 8px,
+                    #6b4828 12px
+                );
+        }
+
+
+        /* =========================
+           ELEVADOR
+        ========================= */
+
+        #elevator {
+            position: absolute;
+
+            left: 25px;
+            top: 25px;
+
+            width: 70px;
+            height: 85px;
+
+            background:
+                linear-gradient(
+                    #9e5b89,
+                    #6b4269
+                );
+
+            border: 5px solid #3d293d;
+
+            z-index: 30;
+
+            transition:
+                top 3s ease;
+
+            box-shadow:
+                0 5px 0 #2d2430;
+        }
+
+        #elevator::after {
+            content: "";
+
+            position: absolute;
+
+            bottom: -12px;
+            left: -8px;
+
+            width: 76px;
+            height: 12px;
+
+            background: #70462e;
+
+            border: 4px solid #432c25;
+        }
+
+
+        /* =========================
+           RAPUNZEL NO ELEVADOR
+        ========================= */
+
+        #rapunzelElevator {
+            left: 10px;
+            top: 5px;
+
+            transform: scale(0.7);
+
+            transform-origin: top left;
+        }
+
+
+        /* =========================
+           PORTAS
+        ========================= */
+
+        .elevator-door {
+            position: absolute;
+
+            top: 0;
+
+            width: 32px;
+            height: 75px;
+
+            background:
+                linear-gradient(
+                    #b86c9f,
+                    #7b4a75
+                );
+
+            border: 4px solid #4a3048;
+
+            z-index: 60;
+
+            transition:
+                transform 1s ease;
+        }
+
+        .door-left {
+            left: 0;
+        }
+
+        .door-right {
+            right: 0;
+        }
+
+        #elevator.closed .door-left {
+            transform: translateX(0);
+        }
+
+        #elevator.closed .door-right {
+            transform: translateX(0);
+        }
+
+        #elevator.open .door-left {
+            transform: translateX(-34px);
+        }
+
+        #elevator.open .door-right {
+            transform: translateX(34px);
+        }
+
+
+        /* =========================
+           ANDAR INFERIOR
+        ========================= */
+
+        #bottomFloor {
+            position: absolute;
+
+            left: 35px;
+            top: 430px;
+
+            width: 190px;
+            height: 125px;
+
+            background:
+                linear-gradient(
+                    #403840,
+                    #28252d
+                );
+
+            border: 5px solid #302b33;
+
+            z-index: 20;
+        }
+
+        .bottom-door {
+            position: absolute;
+
+            left: 60px;
+            top: 10px;
+
+            width: 70px;
+            height: 105px;
+
+            background:
+                linear-gradient(
+                    #201e26,
+                    #35303a
+                );
+
+            border: 5px solid #4c404d;
+
+            transition: 1s;
+        }
+
+
+        /* =========================
+           RAPUNZEL NO JARDIM
+        ========================= */
+
+        #rapunzelBottom {
+            left: 75px;
+            top: 445px;
+
+            opacity: 0;
+
+            transition:
+                left 1.5s ease,
+                opacity 0.5s ease;
+        }
+
+
+        /* =========================
+           PLACA
+        ========================= */
+
+        .sign {
+            position: absolute;
+
+            right: 55px;
+            bottom: 125px;
+
+            width: 120px;
+            height: 50px;
+
+            background: #a86d45;
+
+            border: 5px solid #68432f;
+
+            color: #513526;
+
+            font-weight: bold;
+
+            text-align: center;
+
+            padding-top: 10px;
+
+            transform: rotate(-2deg);
+        }
+
+        .sign::after {
+            content: "";
+
+            position: absolute;
+
+            width: 8px;
+            height: 65px;
+
+            background: #69462f;
+
+            left: 50%;
+            top: 45px;
+
+            transform: translateX(-50%);
+        }
+
+
+        /* =========================
+           BALÃO DE MENSAGEM
+           AGORA NO CANTO SUPERIOR
+           DIREITO
+        ========================= */
+
+        #message {
+            position: absolute;
+
+            right: 35px;
+            top: 35px;
+
+            width: 270px;
+
+            padding: 15px 18px;
+
+            background: #fff1f7;
+
+            border: 4px solid #865a88;
+
+            border-radius: 14px;
+
+            color: #5b4164;
+
+            font-weight: bold;
+
+            font-size: 15px;
+
+            text-align: center;
+
+            box-shadow:
+                4px 4px 0 #6e4b72;
+
+            opacity: 0;
+
+            transition: opacity 0.5s;
+
+            z-index: 100;
+        }
+
+        #message.show {
+            opacity: 1;
+        }
+
+    </style>
+</head>
+
+
+<body>
+
+
+<div id="game">
+
+
+    <!-- NUVENS -->
+
+    <div class="cloud cloud1"></div>
+    <div class="cloud cloud2"></div>
+
+
+    <!-- MONTANHAS -->
+
+    <div class="mountains">
+
+        <div class="mountain mountain1"></div>
+
+        <div class="mountain mountain2"></div>
+
+    </div>
+
+
+    <!-- PAINEL LATERAL -->
+
+    <div id="info">
+
+        <h1>
+            TORRE DA<br>
+            RAPUNZEL
+        </h1>
+
+        <p>
+            Ajude a Rapunzel a
+            descer pelo elevador
+            secreto da torre!
+        </p>
+
+        <p>
+            🌸 Use o botão para
+            chamar o elevador.
+        </p>
+
+    </div>
+
+
+    <!-- CENÁRIO -->
+
+    <div id="scene">
+
+
+        <!-- TORRE -->
+
+        <div id="tower">
+
+
+            <!-- TELHADO -->
+
+            <div class="roof"></div>
+
+
+            <!-- CORPO DA TORRE -->
+
+            <div class="tower-body">
+
+
+                <!-- PLANTAS -->
+
+                <div class="vines vine1">
+                    🌿🌸
+                </div>
+
+                <div class="vines vine2">
+                    🌿🌸
+                </div>
+
+                <div class="vines vine3">
+                    🌿🌸
+                </div>
+
+                <div class="vines vine4">
+                    🌿🌸
+                </div>
+
+
+                <!-- ANDAR SUPERIOR -->
+
+                <div id="topFloor">
+
+
+                    <!-- JANELA -->
+
+                    <div class="window"></div>
+
+
+                    <!-- MÓVEL -->
+
+                    <div class="furniture"></div>
+
+
+                    <!-- RAPUNZEL -->
+
+                    <div
+                        class="rapunzel"
+                        id="rapunzelTop"
+                    >
+
+                        <div class="face"></div>
+
+                        <div class="dress"></div>
+
+                        <div class="arm left"></div>
+
+                        <div class="arm right"></div>
+
+                        <div class="leg left"></div>
+
+                        <div class="leg right"></div>
+
+                    </div>
+
+
+                </div>
+
+
+                <!-- EIXO DO ELEVADOR -->
+
+                <div class="shaft">
+
+
+                    <!-- ELEVADOR -->
+
+                    <div id="elevator">
+
+
+                        <!-- RAPUNZEL DENTRO -->
+
+                        <div
+                            class="rapunzel"
+                            id="rapunzelElevator"
+                        >
+
+                            <div class="face"></div>
+
+                            <div class="dress"></div>
+
+                            <div class="arm left"></div>
+
+                            <div class="arm right"></div>
+
+                            <div class="leg left"></div>
+
+                            <div class="leg right"></div>
+
+                        </div>
+
+
+                        <!-- PORTA ESQUERDA -->
+
+                        <div
+                            class="elevator-door door-left"
+                        ></div>
+
+
+                        <!-- PORTA DIREITA -->
+
+                        <div
+                            class="elevator-door door-right"
+                        ></div>
+
+
+                    </div>
+
+
+                </div>
+
+
+                <!-- ANDAR INFERIOR -->
+
+                <div id="bottomFloor">
+
+                    <div class="bottom-door"></div>
+
+                </div>
+
+
+                <!-- RAPUNZEL NO JARDIM -->
+
+                <div
+                    class="rapunzel"
+                    id="rapunzelBottom"
+                >
+
+                    <div class="face"></div>
+
+                    <div class="dress"></div>
+
+                    <div class="arm left"></div>
+
+                    <div class="arm right"></div>
+
+                    <div class="leg left"></div>
+
+                    <div class="leg right"></div>
+
+                </div>
+
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- JARDIM -->
+
+    <div class="garden">
+
+        <div class="flower flower1">
+            🌸
+        </div>
+
+        <div class="flower flower2">
+            🌷
+        </div>
+
+        <div class="flower flower3">
+            🌼
+        </div>
+
+        <div class="flower flower4">
+            🌸
+        </div>
+
+    </div>
+
+
+    <!-- PLACA DO JARDIM -->
+
+    <div class="sign">
+        JARDIM →
+    </div>
+
+
+    <!-- BOTÃO -->
+
+    <button
+        id="callButton"
+        disabled
+    >
+        💗 CHAMAR ELEVADOR
+    </button>
+
+
+    <!-- MENSAGEM -->
+
+    <div id="message">
+        Elevador em movimento...
+    </div>
+
+
+</div>
+
+
+<script>
+
+
+/* ==========================================
+   PEGANDO OS ELEMENTOS PELO ID
+========================================== */
+
+const callButton =
+    document.getElementById("callButton");
+
+const elevator =
+    document.getElementById("elevator");
+
+const rapunzelTop =
+    document.getElementById("rapunzelTop");
+
+const rapunzelElevator =
+    document.getElementById("rapunzelElevator");
+
+const rapunzelBottom =
+    document.getElementById("rapunzelBottom");
+
+const topFloor =
+    document.getElementById("topFloor");
+
+const bottomFloor =
+    document.getElementById("bottomFloor");
+
+const message =
+    document.getElementById("message");
+
+
+/* ==========================================
+   MOSTRAR MENSAGEM
+========================================== */
+
+function mostrarMensagem(texto) {
+
+    message.textContent = texto;
+
+    message.classList.add("show");
+
+}
+
+
+/* ==========================================
+   INÍCIO
+========================================== */
+
+mostrarMensagem(
+    "Rapunzel está no quarto..."
+);
+
+
+/* ==========================================
+   RAPUNZEL VAI ATÉ O ELEVADOR
+========================================== */
+
+setTimeout(function() {
+
+    rapunzelTop.style.left = "130px";
+
+    mostrarMensagem(
+        "Rapunzel está indo até o elevador..."
+    );
+
+}, 1500);
+
+
+/* ==========================================
+   RAPUNZEL ENTRA NO ELEVADOR
+========================================== */
+
+setTimeout(function() {
+
+    rapunzelTop.style.opacity = "0";
+
+    rapunzelElevator.style.opacity = "1";
+
+    mostrarMensagem(
+        "Rapunzel entrou no elevador!"
+    );
+
+}, 3000);
+
+
+/* ==========================================
+   FECHA AS PORTAS
+========================================== */
+
+setTimeout(function() {
+
+    elevator.classList.add("closed");
+
+    mostrarMensagem(
+        "As portas do elevador fecharam."
+    );
+
+}, 4000);
+
+
+/* ==========================================
+   LIBERA O BOTÃO
+========================================== */
+
+setTimeout(function() {
+
+    callButton.disabled = false;
+
+    mostrarMensagem(
+        "Agora clique em CHAMAR ELEVADOR!"
+    );
+
+}, 5200);
+
+
+/* ==========================================
+   BOTÃO DO ELEVADOR
+========================================== */
+
+callButton.addEventListener("click", function() {
+
+
+    callButton.disabled = true;
+
+
+    mostrarMensagem(
+        "O elevador está descendo..."
+    );
+
+
+    /* ======================================
+       ELEVADOR DESCE
+    ====================================== */
+
+    elevator.style.top = "220px";
+
+
+    /* ======================================
+       ELEVADOR CHEGA
+    ====================================== */
+
+    setTimeout(function() {
+
+        mostrarMensagem(
+            "O elevador chegou ao jardim!"
+        );
+
+
+        /* abre as portas */
+
+        elevator.classList.remove("closed");
+
+        elevator.classList.add("open");
+
+
+    }, 3000);
+
+
+    /* ======================================
+       RAPUNZEL SAI
+    ====================================== */
+
+    setTimeout(function() {
+
+        rapunzelElevator.style.opacity = "0";
+
+        rapunzelBottom.style.opacity = "1";
+
+        mostrarMensagem(
+            "Rapunzel saiu do elevador!"
+        );
+
+
+    }, 4300);
+
+
+    /* ======================================
+       RAPUNZEL CAMINHA
+    ====================================== */
+
+    setTimeout(function() {
+
+        rapunzelBottom.style.left = "170px";
+
+        mostrarMensagem(
+            "Rapunzel está caminhando pelo jardim..."
+        );
+
+
+    }, 4800);
+
+
+    /* ======================================
+       FINAL
+    ====================================== */
+
+    setTimeout(function() {
+
+        rapunzelBottom.style.left = "230px";
+
+        mostrarMensagem(
+            "🌸 Rapunzel chegou ao jardim!"
+        );
+
+    }, 6500);
+
+
+});
+
+</script>
+
+
+</body>
+</html>
